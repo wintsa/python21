@@ -50,10 +50,15 @@ class human:
         return "Human: "+self.name + ", age=" + str(self.age)
     def __repr__(self):
         return self.name +"(" + str(self.age)+")"
+    def sayHello(self):
+        print("Hello,", self.name)
+
 
 
 if __name__ == '__main__':
     ivan = human(3, "Ivan")
+    ivan.sayHello()
+    human.sayHello(ivan)
     for a in ivan:
         print(a)
         '''
