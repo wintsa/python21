@@ -10,8 +10,8 @@ ship = pygame.image.load('img/ship.png')
 ship = pygame.transform.rotate(ship, 90)
 
 """Координаты корабля"""
-shipX = 600
-shipY = 400
+shipX = WIDTH // 2
+shipY = HEIGHT // 2
 
 font = pygame.font.SysFont('comicsansms', 40)
 clock = pygame.time.Clock()
@@ -21,8 +21,11 @@ mouse_position = (0, 0)
 """Выстрелы на экране"""
 fires = []
 
-
 class Fire:
+    """
+    Класс для отображения выстрелов
+    """
+
     """координаты выстрела"""
     x: int
     y: int
@@ -65,13 +68,13 @@ def draw():
 
     text = font.render(str(numFrame), True, THECOLORS['black'])
     numFrame += 1
-    screen.blit(text, (0, 750))
+    screen.blit(text, (0, HEIGHT - text.get_height()))
 
     text = font.render(str(mouse_position), True, THECOLORS['black'])
-    screen.blit(text, (1000, 750))
+    screen.blit(text, (WIDTH - text.get_width(), HEIGHT - text.get_height()))
 
     text = font.render(str(len(fires)), True, THECOLORS['black'])
-    screen.blit(text, (1000, 50))
+    screen.blit(text, (WIDTH - text.get_width(), 0))
 
     for fire in fires:
         fire.move()
@@ -101,6 +104,7 @@ while True:
 
         if event.type == pygame.MOUSEMOTION:
             mouse_position = pygame.mouse.get_pos()
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             dx = pos[0] - shipX
@@ -108,6 +112,7 @@ while True:
             lenXY = sqrt(dx * dx + dy * dy)
             dx = dx * 3 // lenXY
             dy = dy * 3 // lenXY
+            print(dx, dy)
             fires.append(Fire(shipX, shipY, dx, dy))
 
     draw()

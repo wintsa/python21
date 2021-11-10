@@ -19,6 +19,20 @@ async def echo(message: types.Message):
     """
     await message.answer(message.text)
 
+def airplaneReply(icao:str):
+    """
+    Возвращает положение самолета по коду ICAO
+    """
+    path = "https://opensky-network.org/api/states/all?icao24="+icao
+    data = urllib.request.urlopen(path).read()
+    output = json.loads(data)
+    states = output["states"]
+    state = states[0]
+    x = state[5]
+    y = state[6]
+    z = state[7]
+    return f"Самолет находится в точке с коориднатами {x}, {y} на высоте {z} метров"
+
 async def main():
     """
     Основная функция работы с телеграмом
@@ -30,18 +44,8 @@ async def main():
         disp = Dispatcher(bot=bot)
         @disp.message_handler(filters.RegexpCommandsFilter(regexp_commands=['show (\w{6})']))
         async def show_handler(message: types.Message, regexp_command):
-            """
-            Возвращает положение самолета по коду ICAO
-            """
-            path = "https://opensky-network.org/api/states/all?icao24="+regexp_command.group(1)
-            data = urllib.request.urlopen(path).read()
-            output = json.loads(data)
-            states = output["states"]
-            state = states[0]
-            x = state[5]
-            y = state[6]
-            z = state[7]
-            await message.reply(f"Самолет находится в точке с коориднатами {x}, {y} на высоте {z} метров")
+            reply = airplaneReply(regexp_command.group(1))
+            await message.reply(reply)
 
         @disp.message_handler(filters.RegexpCommandsFilter(regexp_commands=['show.*']))
         async def show_handler(message: types.Message, regexp_command):
