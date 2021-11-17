@@ -61,7 +61,7 @@ def minWays(n):
 
 
 if __name__ == '__main__':
-    print(minWays(10))
+    print(minWays(5))
 
 """
 

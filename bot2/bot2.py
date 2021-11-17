@@ -18,6 +18,7 @@ class Form(StatesGroup):
     name = State()  # Will be represented in storage as 'Form:name'
     age = State()  # Will be represented in storage as 'Form:age'
     gender = State()  # Will be represented in storage as 'Form:gender'
+    fill = State()  # Will be represented in storage as 'Form:gender'
 
 @dp.message_handler(commands=['form']) #/form
 async def start_request(event: types.Message):
@@ -85,8 +86,27 @@ async def process_gender(message: types.Message, state: FSMContext):
             parse_mode=ParseMode.MARKDOWN,
         )
 
-    # Finish conversation
-    await state.finish()
+    await Form.next()
+
+@dp.message_handler(regexp="hello", state=Form.fill)
+async def process_hello(message: types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        # And send message
+        await bot.send_message(
+            message.chat.id,
+            md.text(
+                md.text('Hi! Nice to meet you,', md.bold(data['name'])),
+                md.text('Age:', md.code(data['age'])),
+                md.text('Gender:', data['gender']),
+                sep='\n',
+            ),
+            parse_mode=ParseMode.MARKDOWN,
+        )
+
+@dp.message_handler(regexp="hello")
+async def process_hello(message: types.Message, state: FSMContext):
+    await message.reply("fill the /form")
+
 
 @dp.message_handler(commands=['start', 'help']) #/start
 async def start_handler(event: types.Message):
@@ -101,9 +121,10 @@ async def ships(message: types.Message):
     with open('../img/ship.png', 'rb') as photo:
         await message.reply_photo(photo, caption='Ship arrived')
 
-@dp.message_handler(filters.RegexpCommandsFilter(regexp_commands=['call (\+?[\d\-\(\)]*)'])) #/call 123
+@dp.message_handler(filters.RegexpCommandsFilter(regexp_commands=['call (\+?[\d\-\(\)]*)(.*)'])) #/call 123
 async def call(message: types.Message, regexp_command):
     print("call", regexp_command.group(1))
+    print("second", regexp_command.group(2))
     await message.answer(f"Want to call <code>{regexp_command.group(1)}</code>")
 
 @dp.message_handler()
