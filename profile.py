@@ -5,11 +5,9 @@ n и m — четные
 """
 import numpy as np
 
-
 def bit(n: int, p: int):
     p2 = 1 << p
     return (n & p2) >> p
-
 
 def fill(can, p, n, profile, len):
     if len == n:
@@ -30,10 +28,10 @@ def profile(n: int, m: int):
     can = np.zeros((L, L), dtype=int)
     for i in range(L):
         fill(can, i, n, 0, 0)
-    print(can[37])
-    for i in range(L):
-        if can[37][i] == 1:
-            print(f"{i:0{n}b}", i)
+#    print(can[37])
+#    for i in range(L):
+#        if can[37][i] == 1:
+#            print(f"{i:0{n}b}", i)
     arr = np.zeros((m + 1, L), dtype=int)
     arr[0, 0] = 1
     for i in range(m):
@@ -43,17 +41,16 @@ def profile(n: int, m: int):
     print(arr.T)
     return arr[m, 0]
 
-
 if __name__ == '__main__':
-    print(profile(6, 6))
+    print(profile(2, 4))
 
 """
 
 
-0 [1 1 2 3]
-1 [0 0 0 0]
-2 [0 0 0 0]
-3 [0 1 1 2]]
+[[1 1 2 3 5]
+ [0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 1 1 2 3]]
 
 
 n*m
